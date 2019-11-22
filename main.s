@@ -20,8 +20,6 @@ main:
     # Print Title and Rules
     mov $Title, %rdi
     call puts
-    mov $'\n', %rdi
-    call puts
     mov $Rules, %rdi
     call puts
 
