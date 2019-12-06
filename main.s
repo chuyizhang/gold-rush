@@ -116,9 +116,13 @@ MakeChoice:
     je GoToTown
     
 WrongInput:
-    call getchar
-    cmp $'\n', rax
-    jne WrongInputPrompt
+    cmp $8, %rax
+    jl InputAgain
+    mov $7, %r15
+    cmpb $'\n', Choice(%r15)
+    je InputAgain
+    call FlushBuffer
+InputAgain:
     mov $WrongInputPrompt, %rdi
     call puts
     jmp MakeChoice
@@ -139,8 +143,16 @@ EndChoice:
     jmp BeginLoop
 EndLoop:
 
-
     # End Program
     mov $60, %rax
     mov $0, %rdi
     syscall
+
+FlushBuffer:
+    push %rax
+BeginFlush:
+        call getchar
+        cmp $'\n', %rax
+        jne BeginFlush
+    pop %rax
+    ret
