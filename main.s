@@ -16,7 +16,7 @@
         .ascii "5. Food costs 30-50 dollars.\n\0"
     
     WeekPrompt:
-        .ascii "WEEK %d\n\0"
+        .ascii "WEEK %d\n\n\0"
     
     MoneyPrompt:
         .ascii "You have $%d\n\0"
@@ -33,6 +33,10 @@
         .quad 1
     Money:
         .quad 100
+    Endurance:
+        .quad 100
+    Sluice:
+        .quad 100
 
 .text
 .global main
@@ -46,9 +50,37 @@ main:
 BeginLoop:
     cmp $20, Week
     jg EndLoop
+
+    # Print Week
+    mov $0, %rax
     mov $WeekPrompt, %rdi
-    movq Week, %rsi
+    mov Week, %rsi
     call printf
+
+    # Print Money
+    mov $0, %rax
+    mov $MoneyPrompt, %rdi
+    mov MoneyPrompt, %rsi
+    call printf
+    
+    # Print Endurance
+    mov $0, %rax
+    mov $EndurancePrompt, %rdi
+    mov Endurance, %rsi
+    call printf
+
+    # Print Sluice
+    mov $0, %rax
+    mov $SluicePrompt, %rdi
+    mov Sluice, %rsi
+    call printf
+
+    # Print Choice
+    mov $0, %rax
+    mov $SundayPrompt, %rdi
+    call printf
+
+    # Increase Week
     add $1, Week
     jmp BeginLoop
 EndLoop:
