@@ -1,5 +1,6 @@
 .extern puts
 .extern printf
+.extern scanf
 
 .data
     Title:
@@ -29,14 +30,24 @@
     
     SundayPrompt:
         .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town.\n\0"
+    
     Week:
         .quad 1
+    
     Money:
         .quad 100
+    
     Endurance:
         .quad 100
+    
     Sluice:
         .quad 100
+    
+    ChoiceFormat:
+        .ascii "%d"
+    
+    Choice:
+        .quad 0
 
 .text
 .global main
@@ -79,6 +90,11 @@ BeginLoop:
     mov $0, %rax
     mov $SundayPrompt, %rdi
     call printf
+
+    # Input Choice
+    mov $0, %rax
+    mov $ChoiceFormat, %rdi
+    mov $Choice, %rsi
 
     # Increase Week
     add $1, Week
