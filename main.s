@@ -1,6 +1,7 @@
 .extern puts
 .extern printf
 .extern getchar
+.extern random
 
 .data
     Title:
@@ -52,8 +53,12 @@
     RepairSluicePrompt:
         .ascii "You repaired the sluice to 100%\n\0"
     
+    CannotRepairPrompt:
+        .ascii "Sorry, you don't have enough money to repair the sluice! Please make choice again.\0"
+    
     GoToTownPrompt:
-        .ascii "Going to town cost you\n\0"
+        .ascii "Going to town cost you %d\n"
+        .ascii "You regained %d\% endurance\n\0"
 
 .text
 .global main
@@ -130,19 +135,47 @@ InputAgain:
 DoNothing:
     jmp EndChoice
 RepairSluice:
+    cmpq $100, Money
+    jl CannotRepair
+    movq $100, Sluice
+    subq $100, Money
     mov $RepairSluicePrompt, %rdi
     call puts
     jmp EndChoice
-GoToTown:
-    mov $GoToTownPrompt, %rdi
+CannotRepair:
+    mov $CannotRepair, %rdi
     call puts
+    jmp MakeChoice
+GoToTown:
+    mov $0, %rax
+    mov $0, %rdx
+    call random
+    cqo
+    idiv $151
+    add $50, %rdx
+    mov %rdx, %rsi
+
+    mov $0, %rax
+    mov $0, %rdx
+    call random
+    cqo
+    idiv $51
+
+    subq $rsi, Money
+    addq %rdx, Endurance
+
+    mov $GoToTownPrompt, %rdi
+    call printf
+    cmpq $0, Money
+    jl Bankrupt
     jmp EndChoice
 EndChoice:
     # Increase Week
     add $1, Week
     jmp BeginLoop
 EndLoop:
-
+Bankrupt:
+    
     # End Program
     mov $60, %rax
     mov $0, %rdi
