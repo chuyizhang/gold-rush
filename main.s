@@ -151,7 +151,8 @@ GoToTown:
     mov $0, %rdx
     call random
     cqo
-    idiv $151
+    mov $151, %rbx
+    idiv %rbx
     add $50, %rdx
     mov %rdx, %rsi
 
@@ -159,7 +160,8 @@ GoToTown:
     mov $0, %rdx
     call random
     cqo
-    idiv $51
+    mov $51, %rbx
+    idiv %rbx
 
     subq $rsi, Money
     addq %rdx, Endurance
