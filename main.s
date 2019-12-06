@@ -28,7 +28,7 @@
         .ascii "Sluice is at %d\%\n\0"
     
     SundayPrompt:
-        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town."
+        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town.\n\0"
     Week:
         .quad 1
     Money:
@@ -60,7 +60,7 @@ BeginLoop:
     # Print Money
     mov $0, %rax
     mov $MoneyPrompt, %rdi
-    mov MoneyPrompt, %rsi
+    mov Money, %rsi
     call printf
     
     # Print Endurance
