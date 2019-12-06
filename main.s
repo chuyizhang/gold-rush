@@ -1,5 +1,6 @@
 .extern puts
 .extern printf
+.extern getchar
 
 .data
     Title:
@@ -28,7 +29,7 @@
         .ascii "Sluice is at %d\%\n\0"
     
     SundayPrompt:
-        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town.\n\0"
+        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town.\0"
     
     Week:
         .quad 1
@@ -105,7 +106,7 @@ MakeChoice:
     syscall
 
     cmp $2, %rax    # If the user input more or less than one character
-    jpe WrongInput
+    jne WrongInput
 
     cmpb $'1', Choice
     je DoNothing
@@ -115,6 +116,9 @@ MakeChoice:
     je GoToTown
     
 WrongInput:
+    call getchar
+    cmp $'\n', rax
+    jne WrongInputPrompt
     mov $WrongInputPrompt, %rdi
     call puts
     jmp MakeChoice
