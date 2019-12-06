@@ -1,6 +1,5 @@
 .extern puts
 .extern printf
-.extern scanf
 
 .data
     Title:
@@ -43,11 +42,17 @@
     Sluice:
         .quad 100
     
-    ChoiceFormat:
-        .ascii "%d"
-    
     Choice:
         .quad 0
+    
+    WrongInputPrompt:
+        .ascii "Please input a valid choice!\n\0"
+    
+    RepairSluicePrompt:
+        .ascii "You repaired the sluice to 100%\n\0"
+    
+    GoToTownPrompt:
+        .ascii "Going to town cost you\n\0"
 
 .text
 .global main
@@ -86,17 +91,45 @@ BeginLoop:
     mov Sluice, %rsi
     call printf
 
+MakeChoice:
     # Print Choice
-    mov $0, %rax
     mov $SundayPrompt, %rdi
-    call printf
+    call puts
 
-    # Input Choice
+    # Input Choice:
+    movq $0, Choice
     mov $0, %rax
-    mov $ChoiceFormat, %rdi
+    mov $0, %rdi
     mov $Choice, %rsi
-    call scanf
+    mov $8, %rdx
+    syscall
 
+    cmp $2, %rax    # If the user input more or less than one character
+    jpe WrongInput
+
+    cmpb $'1', Choice
+    je DoNothing
+    cmpb $'2', Choice
+    je RepairSluice
+    cmpb $'3', Choice
+    je GoToTown
+    
+WrongInput:
+    mov $WrongInputPrompt, %rdi
+    call puts
+    jmp MakeChoice
+
+DoNothing:
+    jmp EndChoice
+RepairSluice:
+    mov $RepairSluicePrompt, %rdi
+    call puts
+    jmp EndChoice
+GoToTown:
+    mov $GoToTownPrompt, %rdi
+    call puts
+    jmp EndChoice
+EndChoice:
     # Increase Week
     add $1, Week
     jmp BeginLoop
