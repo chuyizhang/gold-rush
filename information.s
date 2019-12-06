@@ -1,3 +1,5 @@
+.global PrintInformation
+
 .extern puts
 
 .data
@@ -15,10 +17,11 @@
         .ascii "5. Food costs 30-50 dollars.\n\0"
 
 .text
-PrintInformation:
-    push %rdi
-    mov $Title, %rdi
-    call puts
-    mov $Rules, %rdi
-    call puts
-    pop %rdi
+    PrintInformation:
+        push %rdi
+        mov $Title, %rdi
+        call puts
+        mov $Rules, %rdi
+        call puts
+        pop %rdi
+        ret
