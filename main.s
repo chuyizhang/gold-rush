@@ -95,6 +95,7 @@ BeginLoop:
     mov $0, %rax
     mov $ChoiceFormat, %rdi
     mov $Choice, %rsi
+    call scanf
 
     # Increase Week
     add $1, Week
