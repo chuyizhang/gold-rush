@@ -9,25 +9,26 @@
     Title:
         .ascii "====================\n"
         .ascii "CALIFORNIA GOLD RUSH\n"
-        .ascii "====================\n\0"
+        .ascii "====================\0"
 
     Rules:
+        .ascii "\n"
         .ascii "Rules:\n"
         .ascii "1. 20 weeks (5 months)\n"
         .ascii "2. Your endurance drops 10-25% each week. If it reaches 0%, the game ends.\n"
         .ascii "3. Panning for gold yields 0-100 dollars.\n"
         .ascii "4. A sluice yields 0-1000 dollars (durability drops 20-50% each week)\n"
-        .ascii "5. Food costs 30-50 dollars.\n\0"
+        .ascii "5. Food costs 30-50 dollars.\0"
     
     GameOverPrompt:
-        .ascii "====== GAME OVER ======\n\0"
+        .ascii "\n====== GAME OVER ======\0"
     
     ResultPrompt:
         .ascii "You ended the game with $%d\n"
         .ascii "Your endurance was %d%%\n\0"
     
     BankruptPrompt:
-        .ascii "You are bankrupt.\n\0"
+        .ascii "You are bankrupt.\0"
 
 .text
     PrintInformation:

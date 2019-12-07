@@ -5,10 +5,10 @@
 
 .data
     WeekPrompt:
-        .ascii "WEEK %d\n\n\0"
+        .ascii "\nWEEK %d\n\0"
     
     MoneyPrompt:
-        .ascii "You have $%d\n\0"
+        .ascii "\nYou have $%d\n\0"
     
     EndurancePrompt:
         .ascii "Your endurance is at %d%%\n\0"
@@ -17,26 +17,26 @@
         .ascii "Sluice is at %d%%\n\0"
     
     SundayPrompt:
-        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town.\0"
+        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town?\0"
     
     WrongInputPrompt:
-        .ascii "Please input a valid choice!\0"
+        .ascii "\nPlease input a valid choice!\0"
     
     RepairSluicePrompt:
-        .ascii "You repaired the sluice to 100%\n\0"
+        .ascii "\nYou repaired the sluice to 100%\0"
     
     CannotRepairPrompt:
-        .ascii "Sorry, you don't have enough money to repair the sluice! Please make choice again.\0"
+        .ascii "\nSorry, you don't have enough money to repair the sluice! Please make choice again.\0"
     
     GoToTownPrompt:
-        .ascii "Going to town cost you $%d\n"
+        .ascii "\nGoing to town cost you $%d\n"
         .ascii "You regained %d%% endurance\n\0"
     
     PanningProfitPrompt:
-        .ascii "Panning for gold yielded $%d\n\0"
+        .ascii "\nPanning for gold yielded $%d\n\0"
     
     SluiceBrokenPrompt:
-        .ascii "The sluice is broken.\n\0"
+        .ascii "The sluice is broken\0"
     
     SluiceProfitPrompt:
         .ascii "The sluice yielded $%d\n\0"
@@ -206,7 +206,7 @@
         push %rdi
         push %rsi
         mov $0, %rax
-        mov $0, %rdi
+        mov $5, %rdi
         mov $50, %rsi
         call RandomNum
         push %r14
@@ -265,7 +265,7 @@
         pop %rdi
         pop %rsi
         # Check Sluice
-        cmpq $0, $Sluice
+        cmpq $0, Sluice
         jg SluiceYielded
         push %rdi
         mov $SluiceBrokenPrompt, %rdi
@@ -377,6 +377,6 @@
         cmpq $0, Endurance
         jge EndDamage
         movq $0, Endurance
-        
+
     EndDamage:
         ret
