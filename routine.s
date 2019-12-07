@@ -1,14 +1,10 @@
 .global FlushBuffer
-.global EndProgram
+.global RandomNum
 
 .extern getchar
+.extern clock
 
 .text
-    EndProgram:
-        mov $60, %rax
-        mov $0, %rdi
-        syscall
-
     # FlushBuffer is used to flush the keyboard input buffer
     FlushBuffer:
         push %rax
@@ -18,4 +14,23 @@
         jne BeginFlush
         pop %rax
         
+        ret
+    
+    # Generate a random number between rdi(min) and rsi(max), put result into rax
+    RandomNum:
+        push %rbx
+        push %rdx
+        mov %rsi, %rbx
+        sub %rdi, %rbx
+        add $1, %rbx
+        mov $0, %rax
+        call clock
+        mov $0, %rdx
+        cqo
+        idiv %rbx
+        mov %rdx, %rax
+        add %rdi, %rax
+        pop %rbx
+        pop %rdx
+
         ret

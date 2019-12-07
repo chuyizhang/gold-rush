@@ -11,16 +11,16 @@
         .ascii "You have $%d\n\0"
     
     EndurancePrompt:
-        .ascii "Your endurance is at %d\%\n\0"
+        .ascii "Your endurance is at %d%%\n\0"
     
     SluicePrompt:
-        .ascii "Sluice is at %d\%\n\0"
+        .ascii "Sluice is at %d%%\n\0"
     
     SundayPrompt:
         .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town.\0"
     
     WrongInputPrompt:
-        .ascii "Please input a valid choice!\n\0"
+        .ascii "Please input a valid choice!\0"
     
     RepairSluicePrompt:
         .ascii "You repaired the sluice to 100%\n\0"
@@ -29,8 +29,8 @@
         .ascii "Sorry, you don't have enough money to repair the sluice! Please make choice again.\0"
     
     GoToTownPrompt:
-        .ascii "Going to town cost you \n"
-        .ascii "You regained \% endurance\n\0"
+        .ascii "Going to town cost you $%d\n"
+        .ascii "You regained %d%% endurance\n\0"
     
     Choice:
         .quad 0
@@ -39,6 +39,12 @@
     RunWeek:
         call PrintWeekInfo
         call MakeChoice
+        cmpq $0, Money
+        jge Continue
+
+        ret
+    Continue:
+        call GainProfit
 
         ret
 
@@ -150,10 +156,10 @@
         ret
     RepairSluice:
         pop %rax
-        # cmpq $100, Money
-        # jl CannotRepair
-        # movq $100, Sluice
-        # subq $100, Money
+        cmpq $100, Money
+        jl CannotRepair
+        movq $100, Sluice
+        subq $100, Money
         push %rdi
         mov $RepairSluicePrompt, %rdi
         call puts
@@ -161,16 +167,58 @@
 
         ret
     CannotRepair:
-        push %rdx
-        mov $CannotRepair, %rdi
+        push %rdi
+        mov $CannotRepairPrompt, %rdi
         call puts
-        pop %rdx
+        pop %rdi
         jmp InputChoice
     GoToTown:
         pop %rax
+        # Generate random cost
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $50, %rdi
+        mov $200, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Generate random gain
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $0, %rdi
+        mov $50, %rsi
+        call RandomNum
+        push %r14
+        mov %rax, %r14
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Update Data
+        sub %r15, Money
+        add %r14, Endurance
+        # Print cost and gain
+        push %rdi
+        push %rsi
         push %rdx
         mov $GoToTownPrompt, %rdi
-        call puts
+        mov %r15, %rsi
+        pop %r15
+        mov %r14, %rdx
+        pop %r14
+        call printf
         pop %rdi
+        pop %rsi
+        pop %rdx
+
+        ret
+    
+    GainProfit:
 
         ret

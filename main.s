@@ -1,4 +1,5 @@
 .global main
+.global EndProgram
 
 .text
     main:
@@ -8,8 +9,13 @@
         cmpq $20, Week
         jg EndLoop
         call RunWeek
+        cmpq $0, Money
+        jl Bankrupt
         addq $1, Week
         jmp BeginLoop
     EndLoop:
-
-        jmp EndProgram
+    Bankrupt:
+    EndProgram:
+        mov $60, %rax
+        mov $0, %rdi
+        syscall
