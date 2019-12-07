@@ -32,6 +32,18 @@
         .ascii "Going to town cost you $%d\n"
         .ascii "You regained %d%% endurance\n\0"
     
+    PanningProfitPrompt:
+        .ascii "Panning for gold yielded $%d\n\0"
+    
+    SluiceBrokenPrompt:
+        .ascii "The sluice is broken.\n\0"
+    
+    SluiceProfitPrompt:
+        .ascii "The sluice yielded $%d\n\0"
+    
+    FoodCostPrompt:
+        .ascii "You ate $%d in food\n\0"
+    
     Choice:
         .quad 0
 
@@ -40,12 +52,14 @@
         call PrintWeekInfo
         call MakeChoice
         cmpq $0, Money
-        jge Continue
-
-        ret
-    Continue:
+        jl Return
         call GainProfit
+        call Cost
+        cmpq $0, Money
+        jl Return
+        call Damage
 
+    Return:
         ret
 
     PrintWeekInfo:
@@ -204,15 +218,18 @@
         sub %r15, Money
         add %r14, Endurance
         # Print cost and gain
+        push %rax
         push %rdi
         push %rsi
         push %rdx
+        mov $0, %rax
         mov $GoToTownPrompt, %rdi
         mov %r15, %rsi
         pop %r15
         mov %r14, %rdx
         pop %r14
         call printf
+        pop %rax
         pop %rdi
         pop %rsi
         pop %rdx
@@ -220,5 +237,146 @@
         ret
     
     GainProfit:
+        # Generate Panning Profit
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $0, %rdi
+        mov $100, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Update Data
+        add %r15, Money
+        # Print Panning Profit
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $PanningProfitPrompt, %rdi
+        mov %r15, %rsi
+        pop %r15
+        call printf
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Check Sluice
+        cmpq $0, $Sluice
+        jg SluiceYielded
+        push %rdi
+        mov $SluiceBrokenPrompt, %rdi
+        call puts
+        pop %rdi
 
+        ret
+    SluiceYielded:
+        # Generate Sluice Profit
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $0, %rdi
+        mov $1000, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Update Data
+        add %r15, Money
+        # Print Sluice Profit
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $SluiceProfitPrompt, %rdi
+        mov %r15, %rsi
+        pop %r15
+        call printf
+        pop %rax
+        pop %rdi
+        pop %rsi
+
+        ret
+
+    Cost:
+        # Generate Food Cost
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $30, %rdi
+        mov $50, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Update Data
+        sub %r15, Money
+        # Print Food Cost
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $FoodCostPrompt, %rdi
+        mov %r15, %rsi
+        pop %r15
+        call printf
+        pop %rax
+        pop %rdi
+        pop %rsi
+
+        ret
+    
+    Damage:
+        # Generate Sluice Damage
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $20, %rdi
+        mov $50, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Update Data
+        sub %r15, Sluice
+        pop %r15
+        # Fix Negative
+        cmpq $0, Sluice
+        jge ContinueDamage
+        movq $0, Sluice
+    ContinueDamage:
+        # Generate Endurance Damage
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $10, %rdi
+        mov $25, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Update Data
+        sub %r15, Endurance
+        pop %r15
+        # Fix Negative
+        cmpq $0, Endurance
+        jge EndDamage
+        movq $0, Endurance
+        
+    EndDamage:
         ret

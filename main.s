@@ -14,7 +14,10 @@
         addq $1, Week
         jmp BeginLoop
     EndLoop:
+        call PrintResult
+        jmp EndProgram
     Bankrupt:
+        call PrintBankrupt
     EndProgram:
         mov $60, %rax
         mov $0, %rdi
