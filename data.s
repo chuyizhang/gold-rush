@@ -2,6 +2,7 @@
 .global Money
 .global Endurance
 .global Sluice
+.global Fortune
 
 .data
     Week:
@@ -15,3 +16,6 @@
     
     Sluice:
         .quad 100
+    
+    Fortune:
+        .quad 50

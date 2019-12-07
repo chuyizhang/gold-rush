@@ -16,6 +16,9 @@
     SluicePrompt:
         .ascii "Sluice is at %d%%\n\0"
     
+    FortunePrompt:
+        .ascii "Your fortune is at %d%%\n\0"
+    
     SundayPrompt:
         .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town?\0"
     
@@ -58,6 +61,7 @@
         cmpq $0, Money
         jl Return
         call Damage
+        call FortuneChange
 
     Return:
         ret
@@ -103,6 +107,17 @@
         mov $0, %rax
         mov $SluicePrompt, %rdi
         mov Sluice, %rsi
+        call printf
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # Print Fortune
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $FortunePrompt, %rdi
+        mov Fortune, %rsi
         call printf
         pop %rax
         pop %rdi
@@ -379,4 +394,39 @@
         movq $0, Endurance
 
     EndDamage:
+        ret
+    
+    FortuneChange:
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $0, %rdi
+        mov $1, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        cmp $0, %r15
+        je ReduceFortune
+        cmp $1, %r15
+        je IncreaseFortune
+    ReduceFortune:
+        subq $10, Fortune
+        # If fortune < 0, then fortune = 0
+        cmpq $0, Fortune
+        jge EndFortuneChange
+        movq $0, Fortune
+        jmp EndFortuneChange
+    IncreaseFortune:
+        addq $10, Fortune
+        # If fortune > 100, than fortune = 100
+        cmpq $100, Fortune
+        jle EndFortuneChange
+        movq $100, Fortune
+    
+    EndFortuneChange:
+        pop %r15
         ret
