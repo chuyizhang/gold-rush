@@ -16,8 +16,11 @@
     SluicePrompt:
         .ascii "Sluice is at %d%%\n\0"
     
+    FortunePrompt:
+        .ascii "Your fortune is at %d%%\n\0"
+    
     SundayPrompt:
-        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town?\0"
+        .ascii "\nIt's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town, 4. Buy some fortune cookies? 5. Try your luck\0"
     
     WrongInputPrompt:
         .ascii "\nPlease input a valid choice!\0"
@@ -32,6 +35,12 @@
         .ascii "\nGoing to town cost you $%d\n"
         .ascii "You regained %d%% endurance\n\0"
     
+    BuyFortuneCookiePrompt:
+        .ascii "\nYou bought some fortune cookies, your fortune is prompted.\0"
+    
+    CannotBuyCookiePrompt:
+        .ascii "\nSorry, you don't have enough money to buy the fortune cookies! Please make choice again.\0"
+    
     PanningProfitPrompt:
         .ascii "\nPanning for gold yielded $%d\n\0"
     
@@ -44,12 +53,16 @@
     FoodCostPrompt:
         .ascii "You ate $%d in food\n\0"
     
+    MedicationPrompt:
+        .ascii "You are sick, medication cost you $100\0"
+    
     Choice:
         .quad 0
 
 .text
     RunWeek:
         call PrintWeekInfo
+        call EventTest
         call MakeChoice
         cmpq $0, Money
         jl Return
@@ -58,6 +71,7 @@
         cmpq $0, Money
         jl Return
         call Damage
+        call FortuneChange
 
     Return:
         ret
@@ -107,7 +121,41 @@
         pop %rax
         pop %rdi
         pop %rsi
+        # Print Fortune
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $FortunePrompt, %rdi
+        mov Fortune, %rsi
+        call printf
+        pop %rax
+        pop %rdi
+        pop %rsi
 
+        ret
+    
+    EventTest:
+        # Generate random number
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $1, %rdi
+        mov $10, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # If greater than 70 then trigger event
+        cmp $7, %r15
+        pop %r15
+        jle EndEventTest
+        call TriggerEvent
+
+    EndEventTest:
         ret
 
     MakeChoice:
@@ -142,6 +190,10 @@
         je RepairSluice
         cmpb $'3', Choice
         je GoToTown
+        cmpb $'4', Choice
+        je BuyFortuneCookie
+        cmpb $'5', Choice
+        je TryLuck
     # default
     WrongInput:
         cmp $8, %rax
@@ -233,6 +285,36 @@
         pop %rdi
         pop %rsi
         pop %rdx
+
+        ret
+    BuyFortuneCookie:
+        pop %rax
+        cmpq $100, Money
+        jl CannotBuyCookie
+        
+        subq $100, Money
+        push %rdi
+        mov $BuyFortuneCookiePrompt, %rdi
+        call puts
+        pop %rdi
+        addq $20, Fortune
+        # If fortune > 100, than fortune = 100
+        cmpq $100, Fortune
+        jle EndBuyFortuneCookie
+        movq $100, Fortune
+
+    EndBuyFortuneCookie:
+        ret
+    CannotBuyCookie:
+        push %rdi
+        mov $CannotBuyCookiePrompt, %rdi
+        call puts
+        pop %rdi
+        jmp InputChoice
+    
+    TryLuck:
+        pop %rax
+        call TriggerEvent
 
         ret
     
@@ -332,7 +414,16 @@
         pop %rax
         pop %rdi
         pop %rsi
+        # Check Endurance Status
+        cmpq $0, Endurance
+        jg FinishCost
+        subq $100, Money
+        push %rdi
+        mov $MedicationPrompt, %rdi
+        call puts
+        pop %rdi
 
+    FinishCost:
         ret
     
     Damage:
@@ -379,4 +470,39 @@
         movq $0, Endurance
 
     EndDamage:
+        ret
+    
+    FortuneChange:
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $0, %rdi
+        mov $1, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        cmp $0, %r15
+        je ReduceFortune
+        cmp $1, %r15
+        je IncreaseFortune
+    ReduceFortune:
+        subq $10, Fortune
+        # If fortune < 0, then fortune = 0
+        cmpq $0, Fortune
+        jge EndFortuneChange
+        movq $0, Fortune
+        jmp EndFortuneChange
+    IncreaseFortune:
+        addq $10, Fortune
+        # If fortune > 100, than fortune = 100
+        cmpq $100, Fortune
+        jle EndFortuneChange
+        movq $100, Fortune
+    
+    EndFortuneChange:
+        pop %r15
         ret
