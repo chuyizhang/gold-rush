@@ -20,7 +20,7 @@
         .ascii "Your fortune is at %d%%\n\0"
     
     SundayPrompt:
-        .ascii "It's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town?\0"
+        .ascii "\nIt's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town?\0"
     
     WrongInputPrompt:
         .ascii "\nPlease input a valid choice!\0"
@@ -47,12 +47,16 @@
     FoodCostPrompt:
         .ascii "You ate $%d in food\n\0"
     
+    MedicationPrompt:
+        .ascii "You are sick, medication cost you $100\0"
+    
     Choice:
         .quad 0
 
 .text
     RunWeek:
         call PrintWeekInfo
+        call EventTest
         call MakeChoice
         cmpq $0, Money
         jl Return
@@ -123,6 +127,29 @@
         pop %rdi
         pop %rsi
 
+        ret
+    
+    EventTest:
+        # Generate random number
+        push %rax
+        push %rdi
+        push %rsi
+        mov $0, %rax
+        mov $1, %rdi
+        mov $100, %rsi
+        call RandomNum
+        push %r15
+        mov %rax, %r15
+        pop %rax
+        pop %rdi
+        pop %rsi
+        # If greater than 70 then trigger event
+        cmp $70, %r15
+        pop %r15
+        jle EndEventTest
+        call TriggerEvent
+
+    EndEventTest:
         ret
 
     MakeChoice:
@@ -347,7 +374,16 @@
         pop %rax
         pop %rdi
         pop %rsi
+        # Check Endurance Status
+        cmpq $0, Endurance
+        jg FinishCost
+        subq $100, Money
+        push %rdi
+        mov $MedicationPrompt, %rdi
+        call puts
+        pop %rdi
 
+    FinishCost:
         ret
     
     Damage:

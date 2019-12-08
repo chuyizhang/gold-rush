@@ -20,8 +20,8 @@
     RandomNum:
         push %rbx
         push %rdx
-        push %r15
-        mov %rdi, %r15
+        push %rcx
+        mov %rdi, %rcx
         mov %rsi, %rbx
         sub %rdi, %rbx
         add $1, %rbx
@@ -31,8 +31,8 @@
         cqo
         idiv %rbx
         mov %rdx, %rax
-        add %r15, %rax
-        pop %r15
+        add %rcx, %rax
+        pop %rcx
         pop %rbx
         pop %rdx
 
