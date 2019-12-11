@@ -37,15 +37,9 @@
     StartPrompt:
         .ascii "\nPress ENTER to get start!\0"
     
-    GameOverPrompt:
-        .ascii "\n====== GAME OVER ======\0"
-    
     ResultPrompt:
         .ascii "You ended the game with $%d\n"
         .ascii "Your endurance was %d%%\n\0"
-    
-    BankruptPrompt:
-        .ascii "You are bankrupt.\0"
 
 .text
     PrintInformation:
@@ -72,7 +66,7 @@
     
     PrintResult:
         push %rdi
-        mov $GameOverPrompt, %rdi
+        mov $GameOver, %rdi
         call puts
         pop %rdi
         push %rax
@@ -93,11 +87,7 @@
 
     PrintBankrupt:
         push %rdi
-        mov $GameOverPrompt, %rdi
-        call puts
-        pop %rdi
-        push %rdi
-        mov $BankruptPrompt, %rdi
+        mov $Bankrupt, %rdi
         call puts
         pop %rdi
 
