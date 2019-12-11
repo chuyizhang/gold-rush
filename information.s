@@ -7,6 +7,7 @@
 
 .data
     Rules:
+        .ascii "\033[0;32m"
         .ascii " _______________________________________________________________________ \n"
         .ascii "|                                                                       |\n"
         .ascii "|                              HOW TO PLAY                              |\n"
@@ -29,7 +30,8 @@
         .ascii "|6. YIELDS AND COSTS                                                    |\n"
         .ascii "|    Panning for gold yields 0-100 dollars.                             |\n"
         .ascii "|    Food costs 30-50 dollars.                                          |\n"
-        .ascii "|_______________________________________________________________________|\0"
+        .ascii "|_______________________________________________________________________|"
+        .ascii "\033[0m\0"
     
     ReadRulePrompt:
         .ascii "\nPress ENTER to read game rules\0"
