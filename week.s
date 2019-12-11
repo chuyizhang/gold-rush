@@ -20,10 +20,15 @@
         .ascii "Your fortune is at %d%%\n\0"
     
     SundayPrompt:
-        .ascii "\nIt's Sunday! Do you want to 1. Do nothing, 2. Repair sluice (-$100), 3. Go to town, 4. Buy some fortune cookies? 5. Try your luck\0"
+        .ascii "\nIt's Sunday! Do you want to:\n"
+        .ascii "1. Do nothing\n"
+        .ascii "2. Repair sluice (-$100)\n"
+        .ascii "3. Go to town\n"
+        .ascii "4. Buy some fortune cookies\n"
+        .ascii "5. Try your luck\n\0"
     
     WrongInputPrompt:
-        .ascii "\nPlease input a valid choice!\0"
+        .ascii "\nPlease input a valid choice:\0"
     
     RepairSluicePrompt:
         .ascii "\nYou repaired the sluice to 100%\0"

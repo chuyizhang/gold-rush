@@ -103,7 +103,10 @@
         ret
     
     GainEndurance:
+        cmpq $100, Endurance
+        jg PrintPrompt
         movq $100, Endurance
+    PrintPrompt:
         push %rdi
         mov $GainEndurancePrompt, %rdi
         call puts
