@@ -5,7 +5,7 @@
 
 .data
     WeekPrompt:
-        .ascii "\nWEEK %d\n\0"
+        .ascii "\033[0;33m\nWEEK %d\n\033[0m\0"
     
     MoneyPrompt:
         .ascii "\nYou have $%d\n\0"
