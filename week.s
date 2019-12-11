@@ -7,16 +7,10 @@
     WeekPrompt:
         .ascii "\033[0;33m\nWEEK %d\n\033[0m\0"
     
-    MoneyPrompt:
-        .ascii "\nYou have $%d\n\0"
-    
-    EndurancePrompt:
-        .ascii "Your endurance is at %d%%\n\0"
-    
-    SluicePrompt:
-        .ascii "Sluice is at %d%%\n\0"
-    
-    FortunePrompt:
+    WeekDetail:
+        .ascii "\nYou have $%d\n"
+        .ascii "Your endurance is at %d%%\n"
+        .ascii "Sluice is at %d%%\n"
         .ascii "Your fortune is at %d%%\n\0"
     
     SundayPrompt:
@@ -93,50 +87,26 @@
         pop %rax
         pop %rdi
         pop %rsi
-        # Print Money
+        # Print week detail
         push %rax
         push %rdi
         push %rsi
+        push %rdx
+        push %rcx
+        push %r8
         mov $0, %rax
-        mov $MoneyPrompt, %rdi
+        mov $WeekDetail, %rdi
         mov Money, %rsi
+        mov Endurance, %rdx
+        mov Sluice, %rcx
+        mov Fortune, %r8
         call printf
         pop %rax
         pop %rdi
         pop %rsi
-        # Print Endurance
-        push %rax
-        push %rdi
-        push %rsi
-        mov $0, %rax
-        mov $EndurancePrompt, %rdi
-        mov Endurance, %rsi
-        call printf
-        pop %rax
-        pop %rdi
-        pop %rsi
-        # Print Sluice
-        push %rax
-        push %rdi
-        push %rsi
-        mov $0, %rax
-        mov $SluicePrompt, %rdi
-        mov Sluice, %rsi
-        call printf
-        pop %rax
-        pop %rdi
-        pop %rsi
-        # Print Fortune
-        push %rax
-        push %rdi
-        push %rsi
-        mov $0, %rax
-        mov $FortunePrompt, %rdi
-        mov Fortune, %rsi
-        call printf
-        pop %rax
-        pop %rdi
-        pop %rsi
+        pop %rdx
+        pop %rcx
+        pop %r8
 
         ret
     
