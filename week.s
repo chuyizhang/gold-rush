@@ -4,9 +4,6 @@
 .extern printf
 
 .data
-    WeekPrompt:
-        .ascii "\033[0;33m\nWEEK %d\n\033[0m\0"
-    
     WeekDetail:
         .ascii "\nYou have $%d\n"
         .ascii "Your endurance is at %d%%\n"
@@ -18,7 +15,7 @@
         .ascii "1. Do nothing\n"
         .ascii "2. Repair sluice (-$100)\n"
         .ascii "3. Go to town\n"
-        .ascii "4. Buy some fortune cookies\n"
+        .ascii "4. Buy some fortune cookies (-$100)\n"
         .ascii "5. Try your luck\n\0"
     
     WrongInputPrompt:
@@ -79,14 +76,19 @@
         # Print Week
         push %rax
         push %rdi
-        push %rsi
         mov $0, %rax
-        mov $WeekPrompt, %rdi
-        mov Week, %rsi
-        call printf
+        mov $WeekLabel, %rdi
+        call puts
         pop %rax
         pop %rdi
-        pop %rsi
+        push %r15
+        push %rdi
+        mov Week, %r15
+        sub $1, %r15
+        mov Weeks(, %r15, 8), %rdi
+        call puts
+        pop %r15
+        pop %rdi
         # Print week detail
         push %rax
         push %rdi
