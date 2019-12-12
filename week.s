@@ -5,10 +5,10 @@
 
 .data
     WeekDetail:
-        .ascii "\nYou have $%d\n"
-        .ascii "Your endurance is at %d%%\n"
-        .ascii "Sluice is at %d%%\n"
-        .ascii "Your fortune is at %d%%\n\0"
+        .ascii "\nYou have \033[1;36m$%d\033[0m\n"
+        .ascii "Your endurance is at \033[1;36m%d%%\033[0m\n"
+        .ascii "Sluice is at \033[1;36m%d%%\033[0m\n"
+        .ascii "Your fortune is at \033[1;36m%d%%\033[0m\n\0"
     
     SundayPrompt:
         .ascii "\nIt's Sunday! Do you want to:\n"
@@ -19,38 +19,38 @@
         .ascii "5. Try your luck\n\0"
     
     WrongInputPrompt:
-        .ascii "\nPlease input a valid choice:\0"
+        .ascii "\n\033[1;31mPlease input a valid choice:\033[0m\0"
     
     RepairSluicePrompt:
-        .ascii "\nYou repaired the sluice to 100%\0"
+        .ascii "\nYou repaired the sluice to \033[1;36m100%\033[0m\0"
     
     CannotRepairPrompt:
-        .ascii "\nSorry, you don't have enough money to repair the sluice! Please make choice again.\0"
+        .ascii "\n\033[1;31mSorry, you don't have enough money to repair the sluice! Please make choice again:\033[0m\0"
     
     GoToTownPrompt:
-        .ascii "\nGoing to town cost you $%d\n"
-        .ascii "You regained %d%% endurance\n\0"
+        .ascii "\nGoing to town cost you \033[1;36m$%d\033[0m\n"
+        .ascii "You regained \033[1;36m%d%%\033[0m endurance\n\0"
     
     BuyFortuneCookiePrompt:
         .ascii "\nYou bought some fortune cookies, your fortune is prompted.\0"
     
     CannotBuyCookiePrompt:
-        .ascii "\nSorry, you don't have enough money to buy the fortune cookies! Please make choice again.\0"
+        .ascii "\n\033[1;31mSorry, you don't have enough money to buy fortune cookies! Please make choice again:\033[0m\0"
     
     PanningProfitPrompt:
-        .ascii "\nPanning for gold yielded $%d\n\0"
+        .ascii "\nPanning for gold yielded \033[1;36m$%d\033[0m\n\0"
     
     SluiceBrokenPrompt:
-        .ascii "The sluice is broken\0"
+        .ascii "\033[1;34mThe sluice is broken\033[0m\0"
     
     SluiceProfitPrompt:
-        .ascii "The sluice yielded $%d\n\0"
+        .ascii "The sluice yielded \033[1;36m$%d\033[0m\n\0"
     
     FoodCostPrompt:
-        .ascii "You ate $%d in food\n\0"
+        .ascii "You ate \033[1;36m$%d\033[0m in food\n\0"
     
     MedicationPrompt:
-        .ascii "You are sick, medication cost you $100\0"
+        .ascii "\033[1;34mYou are sick, medication cost you \033[1;36m$200\033[0m\0"
     
     Choice:
         .quad 0
@@ -394,7 +394,7 @@
         # Check Endurance Status
         cmpq $0, Endurance
         jg FinishCost
-        subq $100, Money
+        subq $200, Money
         push %rdi
         mov $MedicationPrompt, %rdi
         call puts
