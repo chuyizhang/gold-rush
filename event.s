@@ -14,22 +14,22 @@
         .quad LossSluice
     
     GainMoneyPrompt:
-        .ascii "\nSomeone anonymous just gave you some... MONEY!!!\0"
+        .ascii "\n\033[1;32mSomeone anonymous just gave you some... MONEY!!!\033[0m\0"
     
     GainEndurancePrompt:
-        .ascii "\nYou eat something good this week.\0"
+        .ascii "\n\033[1;32mYou eat something good this week.\033[0m\0"
     
     GainSluicePrompt:
-        .ascii "\nYou find a new sluice!\0"
+        .ascii "\n\033[1;32mYou find a new sluice!\033[0m\0"
     
     LossMoneyPrompt:
-        .ascii "\nNo! Someone robbed you of ALL of your money!!!\0"
+        .ascii "\n\033[1;31mNo! Someone robbed you of ALL of your money!!!\033[0m\0"
     
     LossEndurancePrompt:
-        .ascii "\nYou get ill seriously and stay in the hospital.\0"
+        .ascii "\n\033[1;31mYou get ill seriously and stay in the hospital.\033[0m\0"
     
     LossSluicePrompt:
-        .ascii "\nOops! You lost your sluice!\0"
+        .ascii "\n\033[1;31mOops! You lost your sluice!\033[0m\0"
 
 .text
     TriggerEvent:

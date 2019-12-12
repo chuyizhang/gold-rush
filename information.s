@@ -19,7 +19,7 @@
         .ascii "|    If your money goes below $0, you are bankrupt and the game ends    |\n"
         .ascii "|3. Endurance                                                           |\n"
         .ascii "|    Your endurance drops 10-25% each week                              |\n"
-        .ascii "|    If it reaches 0%, you get sick and it cost you $100 to buy medicine|\n"
+        .ascii "|    If it reaches 0%, you get sick and it cost you $200 to buy medicine|\n"
         .ascii "|4. SLUICE                                                              |\n"
         .ascii "|    A sluice yields 0-1000 dollars                                     |\n"
         .ascii "|    Durability drops 20-50% each week                                  |\n"
@@ -40,8 +40,8 @@
         .ascii "\nPress ENTER to get start!\0"
     
     ResultPrompt:
-        .ascii "You ended the game with $%d\n"
-        .ascii "Your endurance was %d%%\n\0"
+        .ascii "You ended the game with \033[1;36m$%d\033[0m\n"
+        .ascii "Your endurance was \033[1;36m%d%%\033[0m\n\0"
 
 .text
     PrintInformation:
