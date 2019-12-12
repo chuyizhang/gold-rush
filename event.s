@@ -23,13 +23,13 @@
         .ascii "\nYou find a new sluice!\0"
     
     LossMoneyPrompt:
-        .ascii "\nNo! Someone stole ALL of your money!!!\0"
+        .ascii "\nNo! Someone robbed you of ALL of your money!!!\0"
     
     LossEndurancePrompt:
         .ascii "\nYou get ill seriously and stay in the hospital.\0"
     
     LossSluicePrompt:
-        .ascii "\nOops! You broke your sluice!\0"
+        .ascii "\nOops! You lost your sluice!\0"
 
 .text
     TriggerEvent:
@@ -96,6 +96,10 @@
         mov %rbx, Money
         pop %rbx
         push %rdi
+        mov $Dollar, %rdi
+        call puts
+        pop %rdi
+        push %rdi
         mov $GainMoneyPrompt, %rdi
         call puts
         pop %rdi
@@ -107,6 +111,10 @@
         jg PrintPrompt
         movq $100, Endurance
     PrintPrompt:
+    push %rdi
+        mov $Chocolate, %rdi
+        call puts
+        pop %rdi
         push %rdi
         mov $GainEndurancePrompt, %rdi
         call puts
@@ -117,6 +125,10 @@
     GainSluice:
         movq $100, Sluice
         push %rdi
+        mov $Find, %rdi
+        call puts
+        pop %rdi
+        push %rdi
         mov $GainSluicePrompt, %rdi
         call puts
         pop %rdi
@@ -125,6 +137,10 @@
     
     LossMoney:
         movq $0, Money
+        push %rdi
+        mov $Robber, %rdi
+        call puts
+        pop %rdi
         push %rdi
         mov $LossMoneyPrompt, %rdi
         call puts
@@ -135,6 +151,10 @@
     LossEndurance:
         movq $0, Endurance
         push %rdi
+        mov $Hospital, %rdi
+        call puts
+        pop %rdi
+        push %rdi
         mov $LossEndurancePrompt, %rdi
         call puts
         pop %rdi
@@ -143,6 +163,10 @@
     
     LossSluice:
         movq $0, Sluice
+        push %rdi
+        mov $Lost, %rdi
+        call puts
+        pop %rdi
         push %rdi
         mov $LossSluicePrompt, %rdi
         call puts
